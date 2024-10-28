@@ -14,5 +14,5 @@
 - name: Show  vault variable
   debug:
     msg:
-      - "{{response.database}}"
-      - "{{response.mongodb}}"
+      - "{{response}}"
+      - "{{response}}"
