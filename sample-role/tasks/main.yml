@@ -9,10 +9,10 @@
 
 - name: Read a kv2 secret with the default mount point
   ansible.builtin.set_fact:
-    response: "{{ lookup('hashi_vault', 'secret=kv/data/superarchive-dev' ) }}"
+    response: "{{ lookup('community.hashi_vault.hashi_vault', 'kv/data/superarchive-dev' ) }}"
 
 - name: Show  vault variable
   debug:
     msg:
-      - "{{response}}"
+      - "{{response.database}}"
       - "{{response}}"
