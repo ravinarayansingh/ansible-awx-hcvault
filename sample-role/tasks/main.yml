@@ -1,0 +1,18 @@
+---
+# tasks file for sample-role
+- name: Show non vault variable
+  ansible.builtin.debug:
+    msg:
+      - "sample_test_var1: {{sample_test_var1}}"
+      - "sample_test_var2: {{sample_test_var2}}"
+      - "sample_test_var3: {{sample_test_var3}}"
+
+- name: Read a kv2 secret with the default mount point
+  ansible.builtin.set_fact:
+    response: "{{ lookup('hashi_vault', 'secret=kv/data/superarchive-dev' ) }}"
+
+- name: Show  vault variable
+  debug:
+    msg:
+      - "{{response.database}}"
+      - "{{response.mongodb}}"
