@@ -36,3 +36,57 @@ Author Information
 ------------------
 
 An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+vault write auth/ldap/config \                  
+    url="ldap://openldap:389" \
+    userdn="ou=Users,dc=nifi,dc=com" \
+    groupdn="ou=Groups,dc=nifi,dc=com" \
+    binddn="cn=admin,dc=nifi,dc=com" \
+    bindpass="secret" \
+    userattr="uid" \
+    groupattr="cn" \
+    insecure_tls=true \
+    starttls=false
+
+```
+
+# Creating secret path for groups in ldap 
+```bash
+vault secrets enable -path=gryphin -version=2 kv 
+vault secrets enable -path=it kv -version=2 kv   
+```
+# Creating policies
+### Policy for Gryphin Admin
+* File Name: `gryphinadmin.hcl` 
+```hcl                                                                  
+path "gryphin/*" {
+    capabilities = ["create", "read", "update", "delete", "list"]
+}
+path "gryphin/metadata/*" {
+    capabilities = ["read", "delete","list"]  # Optional for managing metadata
+}
+```
+```bash
+vault policy write gryphinadmin gryphinadmin.hcl 
+vault write auth/ldap/groups/gryphinadmin policies=gryphinadmin
+
+```
+### Policy for IT Admin
+* File Name: `itadmin.hcl` 
+```hcl                                                                  
+path "it/*" {
+    capabilities = ["create", "read", "update", "delete", "list"]
+}
+path "it/metadata/*" {
+    capabilities = ["read", "delete","list"]  # Optional for managing metadata
+}
+```
+```bash
+vault policy write itadmin itadmin.hcl 
+vault write auth/ldap/groups/itadmin policies=itadmin
+
+```
+* https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/index.html
+* https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/docsite/migration_hashi_vault_lookup.html
+* https://github.com/lrakai/vault-ldap-auth
+* https://www.youtube.com/watch?v=rJCsh298d8o

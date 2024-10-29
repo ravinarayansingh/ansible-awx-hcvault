@@ -7,12 +7,44 @@
       - "sample_test_var2: {{sample_test_var2}}"
       - "sample_test_var3: {{sample_test_var3}}"
 
-- name: Read a kv2 secret with the default mount point
+- name: Read Mongo dev latest
   ansible.builtin.set_fact:
-    response: "{{ lookup('community.hashi_vault.hashi_vault', 'kv/data/superarchive-dev' ) }}"
+    mongo_dev_cred: "{{ lookup('community.hashi_vault.vault_kv2_get', 'mongo/dev/oatihub', engine_mount_point='gryphin' ).secret  }}"
 
 - name: Show  vault variable
   debug:
-    msg:
-      - "{{response.database}}"
-      - "{{response}}"
+    var: mongo_dev_cred
+
+- name: Read Mongo dev cred with specific version
+  ansible.builtin.set_fact:
+    postgres_dev_cred_v1: "{{ lookup('community.hashi_vault.vault_kv2_get', 'mongo/dev/oatihub', engine_mount_point='gryphin' ,version=1).secret  }}"
+
+- name: Show  postgres variable
+  debug:
+    var: postgres_dev_cred_v1
+
+- name: Read a kv2 secret with the default mount point
+  ansible.builtin.set_fact:
+    postgres_dev_cred: "{{ lookup('community.hashi_vault.vault_kv2_get', 'postgres/dev/super-archive', engine_mount_point='gryphin' ).secret  }}"
+
+- name: Show  postgres variable
+  debug:
+    var: postgres_dev_cred
+
+
+
+
+- name: Read a kv2 secret with the default mount point
+  ansible.builtin.set_fact:
+    mssql_dev_cred: "{{ lookup('community.hashi_vault.vault_kv2_get', 'mssql/dev/super-archive', engine_mount_point='it' ).secret  }}"
+
+- name: Show  MSSQL dev variable
+  debug:
+    var: mssql_dev_cred
+#
+#- name: Read a kv2 secret with the default mount point
+#  ansible.builtin.set_fact:
+#    response: "{{ lookup('community.hashi_vault.vault_kv2_get', 'oatihub-mongodb-cred', engine_mount_point='kv', auth_method='ldap', username='guser1', password='test12345' ).secret  }}"
+#- name: Show  vault variable
+#  debug:
+#    var: response
